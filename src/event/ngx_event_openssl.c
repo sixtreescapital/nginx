@@ -3648,7 +3648,7 @@ ngx_ssl_get_certificate(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
 
     for (i = 0; i < cert.len - 1; i++) {
         if (cert.data[i] == LF) {
-            len++;
+            len += 2;
         }
     }
 
@@ -3661,9 +3661,12 @@ ngx_ssl_get_certificate(ngx_connection_t *c, ngx_pool_t *pool, ngx_str_t *s)
     p = s->data;
 
     for (i = 0; i < cert.len - 1; i++) {
-        *p++ = cert.data[i];
         if (cert.data[i] == LF) {
+            *p++ = CR;
+            *p++ = LF;
             *p++ = '\t';
+        } else {
+            *p++ = cert.data[i];
         }
     }
 
